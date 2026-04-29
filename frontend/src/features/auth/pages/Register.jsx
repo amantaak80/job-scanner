@@ -1,13 +1,31 @@
+import { useState } from "react";
 import "../auth.form.scss";
 import { useNavigate, Link } from "react-router";
+import { useAuth } from "../hooks/useAuth";
 
 function Register() {
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const { loading, handleRegister } = useAuth();
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/login");
+
+    await handleRegister({ username, email, password });
+    navigate("/");
   };
+
+  if (loading) {
+    return (
+      <main>
+        <h1>Loading...</h1>
+      </main>
+    );
+  }
 
   return (
     <main>
@@ -22,6 +40,7 @@ function Register() {
               id="username"
               name="username"
               placeholder="Enter Username"
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
@@ -32,6 +51,7 @@ function Register() {
               id="email"
               name="email"
               placeholder="Enter Email"
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -42,10 +62,11 @@ function Register() {
               id="password"
               name="password"
               placeholder="Enter Password"
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
-          <button className="button primary-button" type="button">
+          <button className="button primary-button" type="submit">
             Submit
           </button>
         </form>
